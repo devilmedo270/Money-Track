@@ -1,0 +1,12 @@
+{
+  "appId": "com.moneytracker.app",
+  "appName": "Money Tracker",
+  "webDir": "www",
+  "backgroundColor": "#050d14",
+  "plugins": {
+    "FirebaseAuthentication": {
+      "skipNativeAuth": true,
+      "providers": ["google.com"]
+    }
+  }
+}

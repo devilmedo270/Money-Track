@@ -1,0 +1,28 @@
+{
+  "name": "money-tracker-app",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "sync": "vite build && npx cap sync",
+    "android": "vite build && npx cap sync android && npx cap open android",
+    "ios": "vite build && npx cap sync ios && npx cap open ios"
+  },
+  "dependencies": {
+    "@capacitor-firebase/authentication": "^7.0.0",
+    "@capacitor/android": "^7.0.0",
+    "@capacitor/core": "^7.0.0",
+    "@capacitor/filesystem": "^7.0.0",
+    "@capacitor/ios": "^7.0.0",
+    "@capacitor/share": "^7.0.0",
+    "@fontsource/caveat": "^5.0.0",
+    "@fontsource/inter": "^5.0.0",
+    "firebase": "^10.12.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.0.0",
+    "vite": "^5.4.0"
+  }
+}

@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#050d14">
+<title>Money Tracker</title>
+  <script type="module" crossorigin src="/assets/index-DLHYlwH3.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-C9xe8uB2.css">
+</head>
+<body>
+<!-- ============ NAVBAR ============ -->
+<header class="nav">
+  <div class="container">
+    <a href="#home" class="logo" id="logoLink">
+      <svg viewBox="0 0 40 40" fill="none"><path d="M4 32 L12 10 L20 24 L28 6 L36 32" stroke="#14e6b0" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Money Tracker
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home" class="active">Home</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="icon-btn" id="themeBtn" aria-label="Toggle theme">☀</button>
+      <a href="#" class="btn btn-outline btn-sm guest-only" data-auth="login">Log in</a>
+      <a href="#" class="btn btn-primary btn-sm guest-only" data-auth="signup">Get Started</a>
+      <div class="user-chip"><span class="hello">Hi, <b id="navName">—</b></span><div class="avatar" id="navAvatar">?</div></div>
+      <button class="btn btn-outline btn-sm" id="logoutBtn" style="display:none">Log out</button>
+      <button class="icon-btn burger" id="burger" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ APP DASHBOARD (logged in) ============ -->
+<main class="app" id="app">
+  <div class="container">
+    <div class="app-head">
+      <div>
+        <h1>Welcome back, <span class="accent" id="appName">—</span> 👋</h1>
+        <p id="appDate"></p>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" id="exportBtn">⬇ Export CSV</button>
+        <button class="btn btn-danger btn-sm" id="resetBtn">Clear data</button>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat main"><small>Total Balance</small><b id="stBalance">EGP 0.00</b></div>
+      <div class="stat"><small>Income this month</small><b class="pos" id="stIncome">EGP 0.00</b></div>
+      <div class="stat"><small>Expenses this month</small><b class="neg" id="stExpense">EGP 0.00</b></div>
+      <div class="stat"><small>Budget left</small><b id="stLeft">EGP 0.00</b></div>
+    </div>
+
+    <div class="box roll" id="rollBox">
+      <h3>Rollover balance <span class="muted" style="font-weight:400;font-size:12px">· day → week → month → year</span></h3>
+      <div class="stats roll-stats">
+        <div class="stat main"><small>Today</small><b id="rlDay">—</b><small class="sub" id="rlDayNote"></small></div>
+        <div class="stat"><small>This week</small><b id="rlWeek">—</b><small class="sub" id="rlWeekNote"></small></div>
+        <div class="stat"><small>This month</small><b id="rlMonth">—</b><small class="sub" id="rlMonthNote"></small></div>
+        <div class="stat"><small>This year</small><b id="rlYear">—</b><small class="sub" id="rlYearNote"></small></div>
+      </div>
+      <div class="roll-grid">
+        <div>
+          <div class="roll-total"><small>Total available to spend</small><b id="rlTotal">—</b></div>
+          <div class="muted" style="font-size:12px;margin:14px 0 10px">Last 7 days · saved (+) or overspent (−)</div>
+          <div class="mbars short" id="rlBars"></div>
+        </div>
+        <div>
+          <div class="row2">
+            <div class="field"><label for="rlAmount">Daily allowance (EGP)</label><input id="rlAmount" type="number" min="1" step="1" inputmode="decimal" placeholder="e.g. 400"></div>
+            <div class="field"><label for="rlFrom">Starting from</label><input id="rlFrom" type="date"></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label for="rlWeekStart">Week starts on</label><select id="rlWeekStart"><option value="6">Saturday</option><option value="0">Sunday</option><option value="1">Monday</option></select></div>
+            <div class="field"><label>Quick set</label><button type="button" class="btn btn-ghost btn-sm btn-block" id="rlUseBudget">Monthly budget ÷ days</button></div>
+          </div>
+          <div class="form-error" id="rlError"></div>
+          <div class="roll-actions">
+            <button type="button" class="btn btn-primary btn-block" id="rlSave">Save rollover</button>
+            <button type="button" class="btn btn-danger btn-sm" id="rlOff">Turn off</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid3">
+      <div class="box">
+        <h3>Add a transaction</h3>
+        <div class="type-tabs" id="typeTabs">
+          <button data-t="expense" class="on">Expense</button>
+          <button data-t="income">Income</button>
+          <button data-t="deposit">Deposit</button>
+          <button data-t="withdraw">Withdraw</button>
+          <button data-t="transfer">Transfer</button>
+        </div>
+        <form id="txForm" autocomplete="off">
+          <div class="row2">
+            <div class="field"><label for="fAmount">Amount (EGP)</label><input id="fAmount" type="number" min="0.01" step="0.01" placeholder="0.00" required></div>
+            <div class="field"><label for="fDate">Date</label><input id="fDate" type="date" required></div>
+          </div>
+          <div class="field"><label for="fCat" id="fCatLabel">Category</label><select id="fCat"></select></div>
+          <div class="field"><label for="fDesc">Description <span class="muted">(optional)</span></label><input id="fDesc" type="text" maxlength="60" placeholder="e.g. Carrefour groceries"></div>
+          <div class="form-error" id="txError"></div>
+          <button class="btn btn-primary btn-block" type="submit">Add transaction</button>
+        </form>
+      </div>
+
+      <div class="box">
+        <h3>Spending by category <span class="muted" style="font-weight:400;font-size:12px">· this month</span></h3>
+        <div class="big-donut">
+          <div class="donut" id="bigDonut"><div><b id="donutTotal">0</b><small>EGP spent</small></div></div>
+          <ul class="legend" id="bigLegend"></ul>
+        </div>
+      </div>
+
+      <div class="box">
+        <h3>Monthly budget</h3>
+        <div class="row-sm" style="font-size:12px"><span id="bgSpent">EGP 0 spent</span><span id="bgTotal">of EGP 0</span></div>
+        <div class="progress lg" id="bgBar"><i style="width:0"></i></div>
+        <div class="muted" style="font-size:12px" id="bgNote"></div>
+        <div class="budget-row">
+          <input type="number" id="budgetInput" min="0" step="100" placeholder="Monthly budget in EGP">
+          <button class="btn btn-primary btn-sm" id="saveBudget">Save</button>
+        </div>
+        <h3 style="margin-top:26px">Last 6 months <span class="muted" style="font-weight:400;font-size:12px">· expenses</span></h3>
+        <div class="mbars" id="monthBars"></div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h3>Transactions</h3>
+      <div class="filters">
+        <input type="search" id="fSearch" placeholder="Search description or category…">
+        <select id="fType">
+          <option value="all">All types</option><option value="expense">Expense</option><option value="income">Income</option>
+          <option value="deposit">Deposit</option><option value="withdraw">Withdraw</option><option value="transfer">Transfer</option>
+        </select>
+        <select id="fMonth"></select>
+      </div>
+      <div class="table-wrap" style="border:none;background:none">
+        <table>
+          <thead><tr><th>Date</th><th>Type</th><th>Category</th><th>Description</th><th>Amount</th><th></th></tr></thead>
+          <tbody id="txBody"></tbody>
+        </table>
+      </div>
+      <div class="empty" id="txEmpty" style="display:none">
+        <div id="txEmptyMsg">No transactions yet.</div>
+        <button class="btn btn-ghost btn-sm" id="sampleBtn">Load sample data</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ============ HERO ============ -->
+<section class="hero landing" id="home">
+  <div class="container">
+    <div class="reveal">
+      <div class="eyebrow">Track · Manage · Grow</div>
+      <h1>Take Control<br>of <span class="accent">Your Money</span></h1>
+      <p class="lead">Money Tracker helps you track your expenses, manage your budget and build a better financial future — all in one place. Simple, powerful, and made for you.</p>
+      <div class="hero-btns">
+        <a href="#" class="btn btn-primary" data-auth="signup">Get Started Free →</a>
+        <a href="#about" class="btn btn-outline">▶ Try the Demo</a>
+      </div>
+      <div class="trust">
+        <span><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>Secure &amp; Private</span>
+        <span><svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>Easy to Use</span>
+        <span><svg viewBox="0 0 24 24"><rect x="3" y="5" width="12" height="9" rx="1"/><rect x="13" y="10" width="8" height="10" rx="1"/></svg>Sync Across Devices</span>
+      </div>
+    </div>
+
+    <div class="hero-visual reveal">
+      <div class="float-card"><div class="chip"></div><b>VISA</b></div>
+      <div class="habits"><span class="hand">Better<br>Habits<br>Bigger<br>Goals</span></div>
+
+      <div class="phone">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="ph-head"><span class="accent">▲▲ Money Tracker</span><span>◔</span></div>
+        <div class="balance-card">
+          <small>Total Balance</small><span class="badge">▲ 12%</span>
+          <h3>EGP 48,250.00</h3>
+          <svg class="spark" viewBox="0 0 200 60" preserveAspectRatio="none">
+            <defs><linearGradient id="g" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#14e6b0" stop-opacity=".35"/><stop offset="1" stop-color="#14e6b0" stop-opacity="0"/></linearGradient></defs>
+            <path d="M0 45 L20 40 L40 46 L60 32 L80 38 L100 26 L120 30 L140 18 L160 24 L180 10 L200 14 L200 60 L0 60Z" fill="url(#g)"/>
+            <path d="M0 45 L20 40 L40 46 L60 32 L80 38 L100 26 L120 30 L140 18 L160 24 L180 10 L200 14" fill="none" stroke="#14e6b0" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="quick">
+          <div><i>＋</i>Add Expense</div>
+          <div><i>⬇</i>Add Income</div>
+          <div><i>⇄</i>Transfer</div>
+        </div>
+        <div class="tx-title">Recent Transactions <span>View All ›</span></div>
+        <div class="tx"><div class="ic" style="background:#e5384a">N</div><div>Netflix<small>Entertainment</small></div><div class="amt neg">-EGP 199<small>Today</small></div></div>
+        <div class="tx"><div class="ic" style="background:#14c996">£</div><div>Salary<small>Income</small></div><div class="amt pos">+EGP 12,000<small>Yesterday</small></div></div>
+        <div class="tx"><div class="ic" style="background:#f59e0b">🛒</div><div>Grocery<small>Food &amp; Dining</small></div><div class="amt neg">-EGP 450<small>2 days ago</small></div></div>
+        <div class="tabbar"><span class="on">Home</span><span>Analytics</span><span>Budget</span><span>Profile</span></div>
+      </div>
+
+      <div class="dash">
+        <div class="panel">
+          <h4>Spending Overview</h4>
+          <div class="donut-wrap">
+            <div class="donut"><div><b>18,400</b><small>EGP this month</small></div></div>
+            <ul class="legend">
+              <li><i style="background:#3b82f6"></i>Food &amp; Dining<span>32%</span></li>
+              <li><i style="background:#a855f7"></i>Transport<span>18%</span></li>
+              <li><i style="background:#14e6b0"></i>Shopping<span>15%</span></li>
+              <li><i style="background:#f59e0b"></i>Entertainment<span>12%</span></li>
+              <li><i style="background:#ef4444"></i>Bills<span>11%</span></li>
+              <li><i style="background:#facc15"></i>Other<span>12%</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="panel">
+          <h4>Monthly Progress</h4>
+          <div class="bars"><i style="height:50%"></i><i style="height:80%"></i><i style="height:60%"></i><i style="height:90%"></i><i style="height:70%"></i><i style="height:100%"></i><i style="height:75%"></i><i style="height:85%"></i></div>
+          <div class="progress"><i></i></div>
+          <div class="row-sm" style="margin-top:6px"><span></span><span>EGP 18,400 / 30,000</span></div>
+        </div>
+        <div class="panel">
+          <h4>Recent Activity</h4>
+          <div class="act"><div class="ic">☕</div><div>Coffee Shop<small>Food &amp; Dining</small></div><div class="amt neg">-EGP 90<small>Today</small></div></div>
+          <div class="act"><div class="ic">🚗</div><div>Uber<small>Transport</small></div><div class="amt neg">-EGP 85<small>Yesterday</small></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURES ============ -->
+<section class="features landing" id="features">
+  <div class="container">
+    <div class="reveal">
+      <div class="sec-label">Why Money Tracker?</div>
+      <h2>Everything You Need<br>in One Place</h2>
+      <p class="sec-text">From daily expenses to long-term goals, Money Tracker gives you the tools to make smarter financial decisions and live the life you want.</p>
+      <a href="#" class="btn btn-ghost btn-sm" style="margin-top:22px" data-auth="signup">Start for free →</a>
+    </div>
+    <div class="feat-grid">
+      <div class="feat reveal"><div class="ico i-green">👛</div><h3>Track Expenses</h3><p>Log your spending, categorize your expenses, and see where your money goes.</p></div>
+      <div class="feat reveal"><div class="ico i-purple">◎</div><h3>Set Budgets</h3><p>Create custom budgets and see how much you have left each month.</p></div>
+      <div class="feat reveal"><div class="ico i-blue">⏱</div><h3>Reach Your Goals</h3><p>Save for what matters. Whether it's a new phone, a trip or your future — we help you get there.</p></div>
+      <div class="feat reveal"><div class="ico i-orange">◔</div><h3>Detailed Reports</h3><p>Get clear insights with beautiful charts and reports that make sense.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DEPOSIT ============ -->
+<section class="deposit landing" id="about">
+  <div class="container">
+    <div class="reveal">
+      <div class="sec-label green">Rollover Balance</div>
+      <h2>A Balance That<br>Grows With You</h2>
+      <p class="sec-text">No manual top-ups. Get a fresh allowance every day — whatever you don't spend rolls up automatically.</p>
+      <div class="pay-list">
+        <div class="pay-item"><div class="ic">☀</div><div><b>Daily balance</b><span>Start each day with your allowance. Spend it or save it.</span></div></div>
+        <div class="pay-item"><div class="ic">⟳</div><div><b>Day → Week → Month</b><span>Unspent days roll into the week, and unspent weeks into the month.</span></div></div>
+        <div class="pay-item"><div class="ic">★</div><div><b>Annual balance</b><span>Unspent months roll into your annual balance, year after year.</span></div></div>
+      </div>
+      <span class="hand slogan">Your Money,<br>Your Control ↗</span>
+    </div>
+
+    <div class="deposit-box reveal">
+      <div class="seg four" id="seg"><button class="on" data-mode="Daily">Day</button><button data-mode="Weekly">Week</button><button data-mode="Monthly">Month</button><button data-mode="Annual">Year</button></div>
+      <h4 id="boxTitle">Your daily allowance</h4>
+      <p class="sub">Pick a daily allowance and see how it can roll up if you don't spend it.</p>
+      <label class="amount-label" for="amt">Daily allowance</label>
+      <div class="amount-input"><span>EGP</span><input id="amt" type="number" min="1" value="200"></div>
+      <div class="chips" id="chips">
+        <button data-v="100">100</button><button data-v="150">150</button><button data-v="200" class="on">200</button><button data-v="300">300</button><button data-v="500">500</button>
+      </div>
+      <button class="btn btn-primary btn-block" id="payBtn">Start my rollover balance →</button>
+    </div>
+
+    <div class="dep-visual reveal">
+      <div class="coin a">EGP</div>
+      <div class="coin b">EGP</div>
+      <div class="dep-card"><div class="chip"></div><b>ROLL</b></div>
+      <div class="dep-phone">
+        <div class="check"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h5 id="okTitle">Daily balance</h5>
+        <strong id="okAmt">EGP 200.00</strong>
+        <small id="okNote">Unspent money rolls into<br>your weekly balance</small>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TRANSACTIONS ============ -->
+<section class="transactions landing" id="pricing">
+  <div class="container">
+    <div class="reveal">
+      <div class="sec-label">Recent Transactions</div>
+      <h2>Track Your Activity</h2>
+      <p class="sec-text">See all your income, expenses, and payments in one place. Stay on top of your finances with real-time updates.</p>
+      <a href="#" class="btn btn-ghost btn-sm" style="margin-top:22px" data-auth="login">View My Transactions →</a>
+    </div>
+    <div class="table-wrap reveal">
+      <table>
+        <thead><tr><th>Date</th><th>Type</th><th>Description</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+        <tbody id="demoRows"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="cta landing" id="contact">
+  <div class="container">
+    <div class="reveal">
+      <div class="sec-label">Get Started Today</div>
+      <h2 style="font-size:clamp(30px,4vw,46px)">Your Financial Journey<br>Starts Here</h2>
+      <p class="sec-text" style="max-width:380px">Join thousands of people who are already taking control of their money with Money Tracker.</p>
+      <div class="hero-btns">
+        <a href="#" class="btn btn-primary" data-auth="signup">Get Started Free →</a>
+        <a href="#features" class="btn btn-outline">Learn More</a>
+      </div>
+    </div>
+    <div class="reveal" style="position:relative">
+      <span class="hand slogan2">Smarter<br>Money,<br>Brighter<br>Future</span>
+      <div class="cta-phone">
+        <small>Good evening,</small>
+        <h5>Welcome back 👋</h5>
+        <small>Total Balance</small>
+        <strong>EGP 48,250.00 <span class="badge" style="float:none;font-size:10px">▲ 12%</span></strong>
+        <svg viewBox="0 0 200 60" style="width:100%;margin-top:10px"><path d="M0 45 L25 38 L50 44 L75 28 L100 34 L125 20 L150 26 L175 10 L200 14" fill="none" stroke="#14e6b0" stroke-width="2"/></svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="container">
+    <a href="#home" class="logo" style="font-size:17px">
+      <svg viewBox="0 0 40 40" fill="none" style="width:28px;height:28px"><path d="M4 32 L12 10 L20 24 L28 6 L36 32" stroke="#14e6b0" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Money Tracker
+    </a>
+    <ul class="guest-only">
+      <li><a href="#home">Home</a></li><li><a href="#features">Features</a></li><li><a href="#about">About</a></li><li><a href="#pricing">Pricing</a></li><li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="socials"><a href="#">X</a><a href="#">IG</a><a href="#">YT</a><a href="#">DC</a></div>
+    <small>© 2026 Money Tracker. All rights reserved.</small>
+  </div>
+</footer>
+
+<!-- ============ AUTH MODAL ============ -->
+<div class="modal" id="authModal" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <button class="icon-btn modal-close" id="authClose" aria-label="Close">✕</button>
+    <h3 id="authTitle">Welcome back</h3>
+    <p class="sub" id="authSub">Log in to see your money.</p>
+    <button class="btn btn-google btn-block" type="button" id="googleBtn">
+      <svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.9 2.4 30.4 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.7 6c4.5-4.2 6.9-10.3 6.9-17.7z"/><path fill="#FBBC05" d="M10.5 28.7c-.5-1.4-.8-3-.8-4.7s.3-3.2.8-4.7l-7.9-6.1C.9 16.4 0 20.1 0 24s.9 7.6 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.7-6c-2.1 1.4-4.9 2.3-8.2 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>
+      Continue with Google
+    </button>
+    <div class="or">or use email</div>
+    <form id="authForm" novalidate>
+      <div class="field" id="nameField" style="display:none"><label for="aName">Full name</label><input id="aName" type="text" autocomplete="name" placeholder="Ahmed Mohamed"></div>
+      <div class="field"><label for="aEmail">Email</label><input id="aEmail" type="email" autocomplete="email" placeholder="you@example.com"></div>
+      <div class="field"><label for="aPass">Password</label>
+        <div class="pw-wrap"><input id="aPass" type="password" autocomplete="current-password" placeholder="At least 6 characters"><button type="button" id="pwToggle">Show</button></div>
+      </div>
+      <div class="field" id="confirmField" style="display:none"><label for="aConfirm">Confirm password</label><input id="aConfirm" type="password" autocomplete="new-password" placeholder="Repeat password"></div>
+      <div class="form-error" id="authError"></div>
+      <button class="btn btn-primary btn-block" type="submit" id="authSubmit">Log in</button>
+    </form>
+    <div class="switch" id="authSwitch"></div>
+    <p class="note">🔒 Your account and data are saved securely in the cloud, so you can open them from any device.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+</body>
+</html>
